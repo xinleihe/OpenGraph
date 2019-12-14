@@ -73,23 +73,23 @@ def get_k_core(graph, K=5):
 if __name__ == "__main__":
     recorder = TimeRecord(package_name="SNAP")
     
-    recorder.time_record(func=generate_graph_erdos_renyi, n=100, p=0.2, directed=False)
-    recorder.time_record(func=generate_complete_graph, n=100, directed=False)
+    recorder.get_time_of_func(func=generate_graph_erdos_renyi, n=100, p=0.2, directed=False)
+    recorder.get_time_of_func(func=generate_complete_graph, n=100, directed=False)
 
     recorder.set_graph_generator_config(directed=False, nodes_num=100, erdos_renyi_probability=0.2)
-    recorder.time_record_with_graph(func=get_subgraph)
+    recorder.get_time_of_func(func=get_subgraph, need_generate_graph=True)
 
     recorder.set_graph_generator_config(directed=False, nodes_num=100, erdos_renyi_probability=0.05)
-    recorder.time_record_with_graph(func=get_connected_components_number)
+    recorder.get_time_of_func(func=get_connected_components_number, need_generate_graph=True)
     
     recorder.set_graph_generator_config(directed=True, nodes_num=100, erdos_renyi_probability=0.05)
-    recorder.time_record_with_graph(func=get_strongly_connected_components_number)
-    recorder.time_record_with_graph(func=get_weakly_connected_components_number)
+    recorder.get_time_of_func(func=get_strongly_connected_components_number, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_weakly_connected_components_number, need_generate_graph=True)
     
     recorder.set_graph_generator_config(directed=False, nodes_num=100, erdos_renyi_probability=0.2)
-    recorder.time_record_with_graph(func=get_closeness_centrality)
-    recorder.time_record_with_graph(func=get_betweenness_centrality)
-    recorder.time_record_with_graph(func=get_communities_girvan_newman, test_counts=10)
-    recorder.time_record_with_graph(func=get_communities_CNM)
-    recorder.time_record_with_graph(func=get_clustering_coefficient)
-    recorder.time_record_with_graph(func=get_k_core)
+    recorder.get_time_of_func(func=get_closeness_centrality, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_betweenness_centrality, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_communities_girvan_newman, test_times=10, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_communities_CNM, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_clustering_coefficient, need_generate_graph=True)
+    recorder.get_time_of_func(func=get_k_core, need_generate_graph=True)
