@@ -23,10 +23,20 @@ class Graph(object):
     def __len__(self):
         return len(self._node)
 
+    def __contains__(self, node):
+        try:
+            return node in self._node
+        except TypeError:
+            return False
+
+    def __getitem__(self, node):
+        # TODO: package AdjView of the graph. See networkx.
+        return list(self._adj[node].keys())
+
     @property
     def adj(self):
-        # TODO: AdjView of the graph. See networkx.
-        return list(self._adj.keys())
+        # TODO: package AdjView of the graph. See networkx.
+        return self._adj
 
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
@@ -53,7 +63,7 @@ class Graph(object):
             attr_dict.update(node_attr)
         else:  # If already exists, there is no complain and still updating the node attribute
             self._node[node].update(node_attr)
-
+        
     def add_edge(self, u_of_edge, v_of_edge, **edge_attr):
         self._add_one_edge(u_of_edge, v_of_edge, edge_attr)
 
@@ -81,11 +91,9 @@ class Graph(object):
         u, v = u_of_edge, v_of_edge
         # add nodes
         if u not in self._node:
-            self._adj[u] = self.adjlist_inner_dict_factory()
-            self._node[u] = self.node_attr_dict_factory()
+            self._add_one_node(u)
         if v not in self._node:
-            self._adj[v] = self.adjlist_inner_dict_factory()
-            self._node[v] = self.node_attr_dict_factory()
+            self._add_one_node(v)
         # add the edge
         datadict = self._adj[u].get(v, self.edge_attr_dict_factory())
         datadict.update(edge_attr)
