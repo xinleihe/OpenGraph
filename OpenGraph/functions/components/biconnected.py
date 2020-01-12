@@ -28,7 +28,7 @@ def generator_biconnected_components_nodes(G):
 
 
 def generator_biconnected_components_edges(G):
-    from component in _biconnected_dfs_record_edges(G, need_components=True):
+    for component in _biconnected_dfs_record_edges(G, need_components=True):
         yield component
 
 
