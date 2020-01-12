@@ -2,15 +2,14 @@ from copy import deepcopy
 
 
 class Graph(object):
+    graph_attr_dict_factory = dict
+    node_dict_factory = dict
+    node_attr_dict_factory = dict
+    adjlist_outer_dict_factory = dict
+    adjlist_inner_dict_factory = dict
+    edge_attr_dict_factory = dict
 
     def __init__(self, **graph_attr):
-        self.graph_attr_dict_factory = dict
-        self.node_dict_factory = dict
-        self.node_attr_dict_factory = dict
-        self.adjlist_outer_dict_factory = dict
-        self.adjlist_inner_dict_factory = dict
-        self.edge_attr_dict_factory = dict
-
         self.graph = self.graph_attr_dict_factory()
         self._node = self.node_dict_factory()
         self._adj = self.adjlist_outer_dict_factory()
@@ -19,7 +18,7 @@ class Graph(object):
 
     def __iter__(self):
         return iter(self._node)
-    
+
     def __len__(self):
         return len(self._node)
 
@@ -37,6 +36,45 @@ class Graph(object):
     def adj(self):
         # TODO: package AdjView of the graph. See networkx.
         return self._adj
+
+    @property
+    def nodes(self):
+        # TODO: package NodeView of the graph. See networkx.
+        # return self._node
+        return [node for node in self._node]
+
+    @property
+    def edges(self):
+        # TODO: package EdgeView of the graph. See networkx.
+        edges = list()
+        seen = set()
+        for u in self._adj:
+            for v in self._adj[u]:
+                if (u, v) not in seen:
+                    seen.add((u, v))
+                    seen.add((v, u))
+                    edges.append((u, v, self._adj[u][v]))
+        del seen    
+        return edges
+
+    @property
+    def degree(self):
+        # TODO: package DegreeView of the graph. See networkx.
+        degree = dict()
+        for u, v, d in self.edges:
+            if u in degree:
+                degree[u] += d.get('weight', 1)
+            else:
+                degree[u] = d.get('weight', 1)
+            if v in degree:
+                degree[v] += d.get('weight', 1)
+            else:
+                degree[v] = d.get('weight', 1)
+        return degree
+
+    def size(self):
+        
+
 
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
@@ -63,7 +101,7 @@ class Graph(object):
             attr_dict.update(node_attr)
         else:  # If already exists, there is no complain and still updating the node attribute
             self._node[node].update(node_attr)
-        
+
     def add_edge(self, u_of_edge, v_of_edge, **edge_attr):
         self._add_one_edge(u_of_edge, v_of_edge, edge_attr)
 
@@ -120,13 +158,12 @@ class Graph(object):
     def remove_edge(self, u, v):
         try:
             del self._adj[u][v]
-            if u != v: # self-loop needs only one entry removed
+            if u != v:  # self-loop needs only one entry removed
                 del self._adj[v][u]
         except KeyError:
             raise KeyError("No edge {}-{} in graph.".format(u, v))
-    
+
     def remove_edges(self, edges_to_remove: [tuple]):
         for edge in edges_to_remove:
             u, v = edge[:2]
             self.remove_edge(u, v)
-            
