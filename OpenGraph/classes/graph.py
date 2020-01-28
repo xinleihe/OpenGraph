@@ -71,8 +71,6 @@ class Graph(object):
             else:
                 degree[v] = d.get('weight', 1)
         return degree
-
-    def size(self):
         
 
 
