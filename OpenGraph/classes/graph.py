@@ -54,7 +54,7 @@ class Graph(object):
                     seen.add((u, v))
                     seen.add((v, u))
                     edges.append((u, v, self._adj[u][v]))
-        del seen    
+        del seen
         return edges
 
     @property
@@ -71,8 +71,6 @@ class Graph(object):
             else:
                 degree[v] = d.get('weight', 1)
         return degree
-        
-
 
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
