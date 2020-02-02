@@ -1,4 +1,5 @@
 from OpenGraph.functions.community.modularity import modularity
+from OpenGraph.utils.mapped_queue import MappedQueue
 
 __all__ = [
     "greedy_modularity_communities"
@@ -40,16 +41,17 @@ def greedy_modularity_communities(G, weight=None):
     """
 
     # Count nodes and edges
-    N = len(G.nodes())
-    m = sum([d.get('weight', 1) for u, v, d in G.edges()])
+    N = len(G.nodes)
+    m = sum([d.get('weight', 1) for u, v, d in G.edges])
     q0 = 1.0 / (2.0*m)
 
     # Map node labels to contiguous integers
-    label_for_node = dict((i, v) for i, v in enumerate(G.nodes()))
+    label_for_node = dict((i, v) for i, v in enumerate(G.nodes))
     node_for_label = dict((label_for_node[i], i) for i in range(N))
+    
 
     # Calculate degrees
-    k_for_label = G.degree()
+    k_for_label = G.degree
     k = [k_for_label[label_for_node[i]] for i in range(N)]
 
     # Initialize community and merge lists
@@ -203,3 +205,11 @@ def greedy_modularity_communities(G, weight=None):
         for c in communities.values()]
     return sorted(communities, key=len, reverse=True)
 
+if __name__ == "__main__":
+    
+    g = og.Graph()
+    edges1 = [(1, 2), (2, 3), (1, 3), (3, 4), (4, 5), (4, 6), (5, 6)]
+    g.add_edges(edges1)
+
+
+    print(greedy_modularity_communities(g))
