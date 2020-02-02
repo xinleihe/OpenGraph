@@ -55,7 +55,7 @@ def modularity(G, communities, weight='weight'):
     if not isinstance(communities, list):
         communities = list(communities)
 
-    m = 
+    m = 1
     out_degree = dict(G.degree)
     in_degree = out_degree
     norm = 1 / (2 * m)
