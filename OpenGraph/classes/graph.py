@@ -29,24 +29,20 @@ class Graph(object):
             return False
 
     def __getitem__(self, node):
-        # TODO: package AdjView of the graph. See networkx.
         # return list(self._adj[node].keys())
         return self._adj[node]
 
     @property
     def adj(self):
-        # TODO: package AdjView of the graph. See networkx.
         return self._adj
 
     @property
     def nodes(self):
-        # TODO: package NodeView of the graph. See networkx.
         # return self._node
         return [node for node in self._node]
 
     @property
     def edges(self):
-        # TODO: package EdgeView of the graph. See networkx.
         edges = list()
         seen = set()
         for u in self._adj:
@@ -60,7 +56,6 @@ class Graph(object):
 
     @property
     def degree(self):
-        # TODO: package DegreeView of the graph. See networkx.
         degree = dict()
         for u, v, d in self.edges:
             if u in degree:
