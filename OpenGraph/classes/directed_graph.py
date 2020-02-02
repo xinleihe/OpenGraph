@@ -30,7 +30,8 @@ class DiGraph(object):
 
     def __getitem__(self, node):
         # TODO: package AdjView of the graph. See networkx.
-        return list(self._adj[node].keys())
+        # return list(self._adj[node].keys())
+        return self._adj[node]
 
     @property
     def adj(self):
@@ -52,6 +53,10 @@ class DiGraph(object):
                 edges.append((u, v, self._adj[u][v]))
         return edges
 
+    @property
+    def size(self):
+        return len(self.edges)
+        
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
 
