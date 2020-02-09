@@ -38,8 +38,8 @@ class Graph(object):
 
     @property
     def nodes(self):
-        # return self._node
-        return [node for node in self._node]
+        return self._node
+        # return [node for node in self._node]
 
     @property
     def edges(self):
@@ -66,6 +66,12 @@ class Graph(object):
                 degree[v] += d.get('weight', 1)
             else:
                 degree[v] = d.get('weight', 1)
+
+        # For isolated nodes
+        for node in self.nodes:
+            if node not in degree:
+                degree[node] = 0
+
         return degree
 
     @property
@@ -169,3 +175,38 @@ class Graph(object):
         for edge in edges_to_remove:
             u, v = edge[:2]
             self.remove_edge(u, v)
+
+    def copy(self):
+        G = self.__class__()
+        G.graph.update(self.graph)
+        for node, node_attr in self._node.items():
+            G.add_node(node, **node_attr.copy())
+        for u, nbrs in self._adj.items():
+            for v, edge_data in nbrs.items():
+                G.add_edge(u, v, **edge_data.copy())
+        
+        return G
+
+    def nodes_subgraph(self, from_nodes: list):
+        G = self.__class__()
+        G.graph.update(self.graph)
+        for node, node_attr in self._node.items():
+            if node in from_nodes:
+                G.add_node(node, **node_attr.copy())
+        for u, nbrs in self._adj.items():
+            if u in from_nodes:
+                for v, edge_data in nbrs.items():
+                    if v in from_nodes:
+                        G.add_edge(u, v, **edge_data.copy())
+        
+        return G
+
+
+
+if __name__ == "__main__":
+    A = Graph()
+    A.add_node(node_for_adding = 1, k=2, c=3)
+    A.add_edge(2,3,w=1)
+    B = A.nodes_subgraph(from_nodes=[2,3])
+    print(B.nodes)
+    print(B.edges)
