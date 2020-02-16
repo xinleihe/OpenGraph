@@ -19,6 +19,7 @@ int main()
     c = rand()%10+2;
     int N = n-c, n1;
     int dd = N/c;
+    M.clear();
     for(int i=1;i<=c;i++)
     {
         if(N!=0) n1 = rand()%dd+1;
@@ -26,16 +27,16 @@ int main()
         if(i==c) n1=N;
         N-=n1;
         a[i]=n1+1;
-        M.clear();
+        
         int K=rand()%min(a[i],10);
         for(int j=1;j<=(a[i] * K)/2 ;j++)
         {
             int x = rand()%a[i] + 1, y = rand()%a[i] + 1;
             if(x != y)
             {
-                if(M[make_pair(x,y)]!=true && M[make_pair(y,x)]!=true)
+                if(M[make_pair(sum+x,sum+y)]!=true && M[make_pair(sum+y,sum+x)]!=true)
                 {
-                    M[make_pair(x,y)]=true;
+                    M[make_pair(sum+x,sum+y)]=true;
                     ++cnt;
                     e[cnt][0] = sum+x;
                     e[cnt][1] = sum+y;
@@ -45,6 +46,20 @@ int main()
         for(int j=sum;j<=sum+a[i];j++) label[j]=i;
         for(int j=sum;j<=sum+a[i];j++) community[i].push_back(j);
         sum+=a[i];
+    }
+    for(int i=1;i<=n;i++)
+    {
+        int x = rand()%n+1, y = rand()%n+1;
+        if(x!=y)
+        {
+            if(M[make_pair(sum+x,sum+y)]!=true && M[make_pair(sum+y,sum+x)]!=true)
+                {
+                    M[make_pair(sum+x,sum+y)]=true;
+                    ++cnt;
+                    e[cnt][0] = sum+x;
+                    e[cnt][1] = sum+y;
+                }
+        }
     }
     printf("n m c:\n");
     cout<<n<<" "<<cnt<<" "<<c<<endl;
