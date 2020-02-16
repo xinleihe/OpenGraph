@@ -201,12 +201,38 @@ class Graph(object):
         
         return G
 
+    def to_index_node_graph(self):
+        """
+        Returns
+        1. deepcopy of graph, with each node switched to its index.
+        2. index of node
+        3. node of index
+        """
+        G = self.__class__()
+        G.graph.update(self.graph)
+        index_of_node = dict()
+        node_of_index = dict()
+        for index, (node, node_attr) in enumerate(self._node.items()):
+            G.add_node(index, **node_attr.copy())
+            index_of_node[node] = index
+            node_of_index[index] = node
+        for u, nbrs in self._adj.items():
+            for v, edge_data in nbrs.items():
+                G.add_edge(index_of_node[u], index_of_node[v], **edge_data.copy()) 
+        
+        return G, index_of_node, node_of_index
+
 
 
 if __name__ == "__main__":
     A = Graph()
     A.add_node(node_for_adding = 1, k=2, c=3)
-    A.add_edge(2,3,w=1)
+    A.add_edge("b",3,w=1)
     B = A.nodes_subgraph(from_nodes=[2,3])
+    tt = A.nodes.items()
+    print(A.nodes)
+    print(tt[1])
+    # print(B.edges)
+
+    B = A.to_index_node_graph()
     print(B.nodes)
-    print(B.edges)

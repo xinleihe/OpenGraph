@@ -176,3 +176,24 @@ class DiGraph(object):
                         G.add_edge(u, v, **edge_data.copy())
         
         return G
+
+    def to_index_node_graph(self):
+        """
+        Returns
+        1. deepcopy of graph, with each node switched to its index.
+        2. index of node
+        3. node of index
+        """
+        G = self.__class__()
+        G.graph.update(self.graph)
+        index_of_node = dict()
+        node_of_index = dict()
+        for index, (node, node_attr) in enumerate(self._node.items()):
+            G.add_node(index, **node_attr.copy())
+            index_of_node[node] = index
+            node_of_index[index] = node
+        for u, nbrs in self._adj.items():
+            for v, edge_data in nbrs.items():
+                G.add_edge(index_of_node[u], index_of_node[v], **edge_data.copy()) 
+        
+        return G, index_of_node, node_of_index
