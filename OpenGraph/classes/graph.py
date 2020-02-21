@@ -176,6 +176,18 @@ class Graph(object):
             u, v = edge[:2]
             self.remove_edge(u, v)
 
+    def has_node(self, node):
+        return node in self._node
+
+    def has_edge(self, u, v):
+        try:
+            return v in self._adj[u]
+        except KeyError:
+            return false
+
+    def is_directed(self):
+        return False
+
     def copy(self):
         G = self.__class__()
         G.graph.update(self.graph)
