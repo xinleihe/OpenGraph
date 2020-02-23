@@ -183,7 +183,7 @@ class Graph(object):
         try:
             return v in self._adj[u]
         except KeyError:
-            return false
+            return False
 
     def is_directed(self):
         return False
