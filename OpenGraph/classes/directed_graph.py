@@ -53,6 +53,13 @@ class DiGraph(object):
     def size(self):
         return len(self.edges)
 
+    def neighbors(self):
+        # successors
+        try:
+            return iter(self._adj[node])
+        except KeyError:
+            print("No node {}".format(node))
+
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
 
@@ -151,6 +158,18 @@ class DiGraph(object):
         for edge in edges_to_remove:
             u, v = edge[:2]
             self.remove_edge(u, v)
+
+    def has_node(self, node):
+        return node in self._node
+
+    def has_edge(self, u, v):
+        try:
+            return v in self._adj[u]
+        except KeyError:
+            return False
+
+    def is_directed(self):
+        return True
 
     def copy(self):
         G = self.__class__()
