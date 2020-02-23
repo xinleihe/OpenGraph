@@ -5,6 +5,7 @@ import OpenGraph as og
 from node2vec import Node2Vec
 import random
 import numpy as np
+from tqdm import tqdm
 
 __all__ = [
     "node2vec_multi_thread",
@@ -153,8 +154,7 @@ def simulate_walks(G, walk_length, num_walks, p, q, weight_key=None):
     walks = []
     nodes = list(G.nodes)
     print('Walk iteration:')
-    for walk_iter in range(num_walks):
-        print(str(walk_iter+1), '/', str(num_walks))
+    for walk_iter in tqdm(range(num_walks)):
         random.shuffle(nodes)
         for node in nodes:
             walks.append(_node2vec_walk(G,
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     embedding_vector, most_similar_nodes_of_node = node2vec(
         G=graph,
         dimensions=64, walk_length=30,
-        num_walks=200, **skip_gram_params
+        num_walks=2000, **skip_gram_params
     )
 
     print(embedding_vector)
