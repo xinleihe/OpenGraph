@@ -2,10 +2,11 @@ import sys
 sys.path.append('../../../')
 import OpenGraph as og
 
-from node2vec import Node2Vec
+from node2vec_multi_thread import Node2Vec
 import random
 import numpy as np
 from tqdm import tqdm
+
 
 __all__ = [
     "node2vec_multi_thread",
@@ -58,26 +59,9 @@ def node2vec_multi_thread(G, dimensions=128, walk_length=80, num_walks=10, p=1.0
     # Embed nodes
     model = node2vec.fit(**skip_gram_params)
 
-    embedding_vector = dict()
-    most_similar_nodes_of_node = dict()
-
-    def change_string_to_node_from_gensim_return_value(value_including_str):
-        # As the return value of gensim model.wv.most_similar includes string index in G_index,
-        # the string index should be changed to the original node element in G.
-        result = []
-        for (node_index, value) in value_including_str:
-            node_index = int(node_index)
-            node = node_of_index[node_index]
-            result.append((node, value))
-        return result
-
-    for node in G.nodes:
-        # Output node names are always strings in gensim
-        embedding_vector[node] = model.wv[str(index_of_node[node])]
-
-        most_similar_nodes = model.wv.most_similar(str(index_of_node[node]))
-        most_similar_nodes_of_node[node] = change_string_to_node_from_gensim_return_value(
-            most_similar_nodes)
+    embedding_vector, most_similar_nodes_of_node = _get_embedding_result_from_gensim_skipgram_model(
+        G=G, index_of_node=index_of_node, node_of_index=node_of_index, model=model
+    )
 
     del G_index
     return embedding_vector, most_similar_nodes_of_node
@@ -123,6 +107,15 @@ def node2vec(G, dimensions=128, walk_length=80, num_walks=10, p=1.0, q=1.0, weig
     model = learn_embeddings(
         walks=walks, dimensions=dimensions, **skip_gram_params)
 
+    embedding_vector, most_similar_nodes_of_node = _get_embedding_result_from_gensim_skipgram_model(
+        G=G, index_of_node=index_of_node, node_of_index=node_of_index, model=model
+    )
+    
+    del G_index
+    return embedding_vector, most_similar_nodes_of_node
+
+
+def _get_embedding_result_from_gensim_skipgram_model(G, index_of_node, node_of_index, model):
     embedding_vector = dict()
     most_similar_nodes_of_node = dict()
 
@@ -144,7 +137,6 @@ def node2vec(G, dimensions=128, walk_length=80, num_walks=10, p=1.0, q=1.0, weig
         most_similar_nodes_of_node[node] = change_string_to_node_from_gensim_return_value(
             most_similar_nodes)
 
-    del G_index
     return embedding_vector, most_similar_nodes_of_node
 
 

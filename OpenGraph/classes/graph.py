@@ -185,6 +185,12 @@ class Graph(object):
         except KeyError:
             return False
 
+    def number_of_nodes(self):
+        return len(self._node)
+
+    def number_of_edges(self):
+        return int(self.size)
+
     def is_directed(self):
         return False
 
