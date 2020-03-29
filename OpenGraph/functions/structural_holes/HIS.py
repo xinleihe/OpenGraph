@@ -6,14 +6,17 @@ __all__ = [
 ]
 
 
-def get_structural_holes_HIS(G, C: [frozenset], epsilon):
+def get_structural_holes_HIS(G, C: [frozenset], epsilon, weight='weight'):
+    """
+    Returns S, I, H in paper https://www.aminer.cn/structural-hole
+    """
     # S: list[subset_index]
     S = []
     for community_subset_size in range(2, len(C) + 1):
         S.extend(list(combinations(range(len(C)), community_subset_size)))
     # I: dict[node][cmnt_index]
     # H: dict[node][subset_index]
-    I, H = initialize(G, C, S)
+    I, H = initialize(G, C, S, weight=weight)
 
     alphas = [0.3 for i in range(len(C))]  # list[cmnt_index]
     betas = [(0.5 - math.pow(0.5, len(subset)))
@@ -29,7 +32,7 @@ def get_structural_holes_HIS(G, C: [frozenset], epsilon):
     return S, I, H
 
 
-def initialize(G, C: [frozenset], S: [tuple]):
+def initialize(G, C: [frozenset], S: [tuple], weight='weight'):
     I, H = dict(), dict()
     for node in G.nodes:
         I[node] = dict()
@@ -39,7 +42,7 @@ def initialize(G, C: [frozenset], S: [tuple]):
         for index, community in enumerate(C):
             if node in community:
                 # TODO: add PageRank or HITS to initialize I
-                I[node][index] = G.degree[node]
+                I[node][index] = G.degree(weight=weight)[node]
             else:
                 I[node][index] = 0
 
