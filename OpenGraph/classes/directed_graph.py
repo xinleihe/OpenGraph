@@ -49,47 +49,9 @@ class DiGraph(object):
                 edges.append((u, v, self._adj[u][v]))
         return edges
 
-    def out_degree(self, weight='weight'):
-        degree = dict()
-        for u, v, d in self.edges:
-            if u in degree:
-                degree[u] += d.get(weight, 1)
-            else:
-                degree[u] = d.get(weight, 1)
-        
-        # For isolated nodes
-        for node in self.nodes:
-            if node not in degree:
-                degree[node] = 0
-
-        return degree
-
-    def in_degree(self, weight='weight'):
-        degree = dict()
-        for u, v, d in self.edges:
-            if v in degree:
-                degree[v] += d.get(weight, 1)
-            else:
-                degree[v] = d.get(weight, 1)
-        
-        # For isolated nodes
-        for node in self.nodes:
-            if node not in degree:
-                degree[node] = 0
-
-        return degree
-
-    def size(self, weight=None):
-        """
-        Returns the number of edges or total of all edge weights.
-
-        Parameters
-        -----------
-        weight : String or None
-            key for edge weight.
-        """
-        s = sum(d for v, d in self.out_degree(weight=weight))
-        return int(s) if weight is None else s
+    @property
+    def size(self):
+        return len(self.edges)
 
     def neighbors(self):
         # successors
@@ -148,35 +110,6 @@ class DiGraph(object):
                 self._add_one_edge(edge[0], edge[1], attr)
             except Exception as err:
                 print(err)
-
-    def add_edges_from_file(self, file, weighted=False):
-        """
-        Added edges from file, for example, txt files.
-        Each line is in form like:
-        a b 23.0
-        which denotes an edge (a, b) with weight 23.0.
-
-        Parameters
-        ----------
-        weighted : boolean
-            if true, add an weighted edge
-        """
-        with open(file, 'r') as fp:
-            edges = fp.readlines()
-        if weighted:
-            for edge in edges:
-                edge = edge.split()
-                try:
-                    self.add_edge(edge[0], edge[1])
-                except:
-                    pass
-        else:
-            for edge in edges:
-                edge = edge.split()
-                try:
-                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
-                except:
-                    pass
 
     def _add_one_edge(self, u_of_edge, v_of_edge, edge_attr: dict = {}):
         u, v = u_of_edge, v_of_edge

@@ -7,8 +7,7 @@ __all__ = ['MappedQueue']
 
 
 class MappedQueue(object):
-    """
-    The MappedQueue class implements an efficient minimum heap. The
+    """The MappedQueue class implements an efficient minimum heap. The
     smallest element can be popped in O(1) time, new elements can be pushed
     in O(log n) time, and any element can be removed or updated in O(log n)
     time. The queue cannot contain duplicate elements and an attempt to push an

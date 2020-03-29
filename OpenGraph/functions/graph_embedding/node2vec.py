@@ -244,9 +244,9 @@ def _alias_setup(probs):
 
 
 def _node2vec_walk(G, walk_length, start_node, alias_nodes, alias_edges):
-    """
+    '''
     Simulate a random walk starting from start node.
-    """
+    '''
     walk = [start_node]
 
     while len(walk) < walk_length:
@@ -277,9 +277,9 @@ def _alias_draw(J, q):
 
 
 def learn_embeddings(walks, dimensions, **skip_gram_params):
-    """
+    '''
     Learn embeddings with Word2Vec.
-    """
+    '''
     from gensim.models import Word2Vec
 
     walks = [list(map(str, walk)) for walk in walks]

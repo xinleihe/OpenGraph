@@ -90,7 +90,7 @@ class SDNE(object):
 
         self.model, self.emb_model = create_model(self.node_size, hidden_size=self.hidden_size, l1=self.nu1,
                                                   l2=self.nu2)
-        self.model.compile(optimizer=opt, loss=[l_2nd(self.beta), l_1st(self.alpha)])
+        self.model.compile(opt, [l_2nd(self.beta), l_1st(self.alpha)])
         self.get_embeddings()
 
     def train(self, batch_size=1024, epochs=1, initial_epoch=0, verbose=1):
@@ -149,8 +149,8 @@ class SDNE(object):
         A_row_index = []
         A_col_index = []
 
-        for edge in graph.edges:
-            v1, v2 = edge[0], edge[1]
+        for edge in graph.edges():
+            v1, v2 = edge
             edge_weight = graph[v1][v2].get('weight', 1)
 
             A_data.append(edge_weight)
@@ -166,18 +166,10 @@ class SDNE(object):
         return A, L
 
 if __name__ == "__main__":
-
-    with open('./Wiki_edgelist.txt', 'r') as fp:
-        data = fp.readlines()
-    G = og.Graph()
-    for edge in data:
-        edge = edge.split()
-        try:
-            G.add_edge(int(edge[0]), int(edge[1]))
-        except:
-            pass
+    import networkx as nx
+    G = nx.read_edgelist('./Wiki_edgelist.txt',
+                         create_using=nx.DiGraph(), nodetype=None, data=[('weight', int)])
 
     model = SDNE(G, hidden_size=[256, 128],)
     model.train(batch_size=3000, epochs=40, verbose=2)
     embeddings = model.get_embeddings()
-    

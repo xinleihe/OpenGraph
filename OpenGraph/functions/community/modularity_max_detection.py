@@ -7,8 +7,7 @@ __all__ = [
 
 
 def greedy_modularity_communities(G, weight=None):
-    """
-    Find communities in graph using Clauset-Newman-Moore greedy modularity
+    """Find communities in graph using Clauset-Newman-Moore greedy modularity
     maximization. This method currently supports the Graph class and does not
     consider edge weights.
 
@@ -18,11 +17,19 @@ def greedy_modularity_communities(G, weight=None):
 
     Parameters
     ----------
-    G : graph
+    G : NetworkX graph
 
     Returns
-    ----------
+    -------
     Yields sets of nodes, one for each community.
+
+    Examples
+    --------
+    >>> from networkx.algorithms.community import greedy_modularity_communities
+    >>> G = nx.karate_club_graph()
+    >>> c = list(greedy_modularity_communities(G))
+    >>> sorted(c[0])
+    [8, 14, 15, 18, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]
 
     References
     ----------
@@ -44,7 +51,7 @@ def greedy_modularity_communities(G, weight=None):
     
 
     # Calculate degrees
-    k_for_label = G.degree(weight=weight)
+    k_for_label = G.degree
     k = [k_for_label[label_for_node[i]] for i in range(N)]
 
     # Initialize community and merge lists

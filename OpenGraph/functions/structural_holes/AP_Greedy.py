@@ -16,7 +16,7 @@ __all__ = [
 
 
 @only_implemented_for_UnDirected_graph
-def common_greedy(G, k, c=1.0, weight='weight'):
+def common_greedy(G, k, c=1.0):
     """
     Returns top k nodes as structural hole spanners,
     Algorithm 1 of https://dl.acm.org/profile/81484650642
@@ -25,25 +25,19 @@ def common_greedy(G, k, c=1.0, weight='weight'):
     ----------
     G : graph
         An undirected graph.
-
     k : int
         top - k structural hole spanners
-
     c : float
         To define zeta: zeta = c * (n*n*n), and zeta is the large
         value assigned as the shortest distance of two unreachable
         vertices.
         Default is 1.
-
-    weight : String or None
-        Key for edge weight. None if not concerning about edge weight.
-    
     """
     v_sns = []
     G_i = G.copy()
     N = len(G)
     for i in range(k):
-        sorted_nodes = sort_nodes_by_degree(G_i, weight)
+        sorted_nodes = sort_nodes_by_degree(G_i)
         C_max = 0
 
         for j in range(N-i):
@@ -68,9 +62,9 @@ def common_greedy(G, k, c=1.0, weight='weight'):
     return v_sns
 
 
-def sort_nodes_by_degree(G, weight='weight'):
+def sort_nodes_by_degree(G):
     sorted_nodes = []
-    for node, degree in sorted(G.degree(weight=weight).items(), key=lambda x: x[1], reverse=True):
+    for node, degree in sorted(G.degree.items(), key=lambda x: x[1], reverse=True):
         sorted_nodes.append(node)
     return sorted_nodes
 
@@ -82,7 +76,6 @@ def procedure1(G, c=1.0):
     Parameters
     -----------
     G : graph
-
     c : float
         To define zeta: zeta = c * (n*n*n)
         Default is 1.
@@ -159,7 +152,6 @@ def procedure2(G, c=1.0):
     Parameters
     -----------
     G : graph
-
     c : float
         To define zeta: zeta = c * (n*n*n)
         Default is 1.
@@ -208,7 +200,7 @@ def _get_sum_all_shortest_paths_of_component(G):
 
 
 @only_implemented_for_UnDirected_graph
-def AP_Greedy(G, k, c=1.0, weight='weight'):
+def AP_Greedy(G, k, c=1.0):
     """
     Returns top k nodes as structural hole spanners,
     Algorithm 2 of https://dl.acm.org/profile/81484650642
@@ -217,18 +209,13 @@ def AP_Greedy(G, k, c=1.0, weight='weight'):
     ----------
     G : graph
         An undirected graph.
-
     k : int
         top - k structural hole spanners
-
     c : float
         To define zeta: zeta = c * (n*n*n), and zeta is the large
         value assigned as the shortest distance of two unreachable
         vertices.
         Default is 1.
-        
-    weight : String or None
-        Key for edge weight. None if not concerning about edge weight.
     """
     v_sns = []
     G_i = G.copy()
@@ -244,7 +231,7 @@ def AP_Greedy(G, k, c=1.0, weight='weight'):
         if len(lower_bound) !=0 and lower_bound[0][1] > max(upper_bound):
             v_i = lower_bound[0][0]
         else:  # If acticulation points not chosen, use common_greedy instead.
-            sorted_nodes = sort_nodes_by_degree(G_i, weight)
+            sorted_nodes = sort_nodes_by_degree(G_i)
             C_max = 0
 
             for j in range(N-i):
@@ -278,7 +265,6 @@ def _get_lower_bound_of_ap_nodes(G, c=1.0):
     ----------
     G : graph
         An undirected graph.
-
     c : float
         To define zeta: zeta = c * (n*n*n), and zeta is the large
         value assigned as the shortest distance of two unreachable
@@ -327,10 +313,8 @@ def _get_upper_bound_of_non_ap_nodes(G, ap: list, c=1.0):
     ----------
     G : graph
         An undirected graph.
-
     ap : list
         Articulation points of G.
-        
     c : float
         To define zeta: zeta = c * (n*n*n), and zeta is the large
         value assigned as the shortest distance of two unreachable

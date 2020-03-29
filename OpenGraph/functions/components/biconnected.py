@@ -41,9 +41,8 @@ def generator_articulation_points(G):
 
 
 def _biconnected_dfs_record_edges(G, need_components=True):
-    """
-    References
-    ----------
+    r"""
+    References:
     https://www.cnblogs.com/nullzx/p/7968110.html
     https://blog.csdn.net/gauss_acm/article/details/43493903
     """

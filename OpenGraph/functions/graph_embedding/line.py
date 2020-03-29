@@ -34,9 +34,9 @@ def create_model(numNodes, embedding_size, order='second'):
     v_j_context_emb = context_emb(v_j)
 
     first = Lambda(lambda x: tf.reduce_sum(
-        x[0]*x[1], axis=-1, keep_dims=False), name='first_order')([v_i_emb, v_j_emb])
+        x[0]*x[1], axis=-1, keepdims=False), name='first_order')([v_i_emb, v_j_emb])
     second = Lambda(lambda x: tf.reduce_sum(
-        x[0]*x[1], axis=-1, keep_dims=False), name='second_order')([v_i_emb_second, v_j_context_emb])
+        x[0]*x[1], axis=-1, keepdims=False), name='second_order')([v_i_emb_second, v_j_context_emb])
 
     if order == 'first':
         output_list = [first]
@@ -53,15 +53,11 @@ def create_model(numNodes, embedding_size, order='second'):
 class LINE:
     def __init__(self, graph, embedding_size=8, negative_ratio=5, order='second',):
         """
-        Parameters
-        ----------
-        graph : graph
 
-        embedding_size : int
-        
-        negative_ratio : 
-
-        order: 'first','second','all'
+        :param graph:
+        :param embedding_size:
+        :param negative_ratio:
+        :param order: 'first','second','all'
         """
         if order not in ['first', 'second', 'all']:
             raise ValueError('mode must be fisrt,second,or all')
@@ -203,18 +199,11 @@ class LINE:
 
 if __name__ == "__main__":
 
-    with open('./release-youtube-links.txt', 'r') as fp:
+    with open('./Wiki_edgelist.txt', 'r') as fp:
         data = fp.readlines()
     G = og.Graph()
-    edges = []
     for edge in data:
         edge = edge.split()
-        edges.append(edge)
-    
-    print(len(edges))
-    import random
-    random.shuffle(edges)
-    for edge in edges[:1000]:
         try:
             G.add_edge(int(edge[0]), int(edge[1]))
         except:
@@ -227,5 +216,3 @@ if __name__ == "__main__":
     for node in embeddings:
         # print("{}: {}".format(node, embeddings[node]))
         pass
-
-    
