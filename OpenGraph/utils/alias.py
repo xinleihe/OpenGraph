@@ -5,9 +5,16 @@ __all__ = [
 
 def create_alias_table(area_ratio):
     """
+    Parameters
+    ---------
+    area_ratio : 
+        sum(area_ratio)=1
 
-    :param area_ratio: sum(area_ratio)=1
-    :return: accept,alias
+    Returns
+    ---------- 
+    1. accept
+    2. alias
+
     """
     import numpy as np
     l = len(area_ratio)
@@ -42,10 +49,15 @@ def create_alias_table(area_ratio):
 
 def alias_sample(accept, alias):
     """
+    Parameters
+    ----------
+    accept :
 
-    :param accept:
-    :param alias:
-    :return: sample index
+    alias :
+
+    Returns
+    ---------- 
+    sample index
     """
     import numpy as np
     N = len(accept)

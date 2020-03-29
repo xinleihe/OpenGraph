@@ -3,7 +3,7 @@ __all__ = [
     "get_structural_holes_MaxD"
 ]
 
-def get_community_kernel(G, C: [frozenset]):
+def get_community_kernel(G, C: [frozenset], weight='weight'):
     '''
     To get community kernels with most degrees.
     Parameters
@@ -23,28 +23,22 @@ def get_community_kernel(G, C: [frozenset]):
     for i, cc in enumerate(C):
         for each_node in cc:
             area[each_node-1] += 1 << i    # node_id from 1 to n.
-    # print(area)
     kernels = []
     cnt = 0
     for i in range(len(C)):
         mask = 1<<i
         cnt+=1
-        # print(cnt, ":", mask)
         q = []
         p = []
         for i in range(len(G)):
             if (area[i] & mask) == mask:
-                q.append((G.degree[i+1], i+1))
+                q.append((G.degree(weight=weight)[i+1], i+1))
         q.sort()
         q.reverse()
-        # print(q)
         for i in range(max(int(len(q)/100),
                            min(2, len(q)))): # latter of min for test.
             p.append(q[i][1])
-        # if len(p) > 0:
-        #     kernels.append(p)
         kernels.append(p)
-    # print(kernels)
     if len(kernels) < 2:
         print("ERROR: WE should have at least 2 communities.")
     for i in range(len(kernels)):
@@ -54,13 +48,21 @@ def get_community_kernel(G, C: [frozenset]):
     # print(kernels)
     return kernels
 
+
 def get_structural_holes_MaxD (G, k_size, C: [frozenset]):
     '''
     To calc the strucutral hole spanners using MaxD.
 
+
     Parameters
     ----------
     G : graph
+
+
+    C : [frozenset]
+        communities
+    """
+
         An undirected graph.
     k_size : int
         top-k SHS
@@ -77,10 +79,9 @@ def get_structural_holes_MaxD (G, k_size, C: [frozenset]):
     #     print()
     # print(len(C))
 
+
     kernels = get_community_kernel(G, C)
-    # print(kernels)
     c = len(kernels)
-    # print(c)
     save = []
     for i in range(len(G)):
         save.append(False)
@@ -110,19 +111,15 @@ def get_structural_holes_MaxD (G, k_size, C: [frozenset]):
             if save[i] == False:
                 q.append((-1, i))
             else:
-                q.append((sflow[i]+G.degree[i+1], i))
+                q.append((sflow[i]+G.degree(weight=weight)[i+1], i))
         q.sort()
         q.reverse()
-        # print(q)
         candidates = []
         for i in range(n):
             if save[q[i][1]] == True and len(candidates) < k_size:
                 candidates.append(q[i][1])
         ret = pick_candidates(n, candidates, kernels, save)
-        #print(ret[1]+1)
         ans_list.append(ret[1]+1)
-    # global head
-    # head.append(233)
     del sflow
     del q
     return ans_list
@@ -199,7 +196,6 @@ def dinic_bfs():
     Q.append(src)
     cl = 0
     while cl < len(Q):
-        # print(cl, len(Q))
         k = Q[cl]
         i = head[k]
         while i >= 0:
@@ -252,13 +248,11 @@ def dinic_flow():
     '''
     result = 0
     global work
-    # print(dinic_bfs())
     while dinic_bfs():
         work.clear()
         for i in range(node):
             work.append(head[i])
         result += dinic_dfs(src, oo)
-    # print(result)
     return result
 
 def max_flow(n,kernels, save, prev_flow = None):
@@ -280,7 +274,6 @@ def max_flow(n,kernels, save, prev_flow = None):
     for i in range(node):
         dsave.append(True)
 
-    # print(nedge)
 
     if prev_flow != None:
         for i in range(nedge):
@@ -324,10 +317,6 @@ def init_MaxD(_node, _src, _dest):
     flow.clear()
     nex.clear()
 
-    # print(head)
-    # print(node)
-    # print(src)
-    # print(dest)
     return
 
 def addedge(u, v, c1, c2):
@@ -353,7 +342,7 @@ def addedge(u, v, c1, c2):
     nex.append(head[u])
     head[u] = nedge
     nedge += 1
-    # print(u, point[nedge-1])
+
     point.append(u)
     capa.append(c2)
     flow.append(0)
@@ -379,8 +368,6 @@ def build_network(kernels, c, G):
     n = len(G)
     init_MaxD(n*(c-1)+2, n*(c-1), n*(c-1)+1)
 
-    # print(kernels)
-
     base = 0
     for k_iter in range(c):
         S1 = set()
@@ -398,17 +385,13 @@ def build_network(kernels, c, G):
             addedge(base + edges[0] - 1, base + edges[1] - 1, 1, 1)
             addedge(base + edges[1] - 1, base + edges[0] - 1, 1, 1)
 
-        # print(nedge)
-
         for i in S1:
             if i not in S2:
-                # print(i)
                 addedge(src, base + i - 1, n, 0)
         for i in S2:
             if i not in S1:
                 addedge(base + i - 1, dest, n, 0)
         base += n
-    # print(dest)
     return
 
 if __name__ == "__main__":
