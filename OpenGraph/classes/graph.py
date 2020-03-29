@@ -54,18 +54,17 @@ class Graph(object):
         del seen
         return edges
 
-    @property
-    def degree(self):
+    def degree(self, weight='weight'):
         degree = dict()
         for u, v, d in self.edges:
             if u in degree:
-                degree[u] += d.get('weight', 1)
+                degree[u] += d.get(weight, 1)
             else:
-                degree[u] = d.get('weight', 1)
+                degree[u] = d.get(weight, 1)
             if v in degree:
-                degree[v] += d.get('weight', 1)
+                degree[v] += d.get(weight, 1)
             else:
-                degree[v] = d.get('weight', 1)
+                degree[v] = d.get(weight, 1)
 
         # For isolated nodes
         for node in self.nodes:
@@ -74,9 +73,17 @@ class Graph(object):
 
         return degree
 
-    @property
-    def size(self):
-        return len(self.edges)
+    def size(self, weight=None):
+        """
+        Returns the number of edges or total of all edge weights.
+
+        Parameters
+        -----------
+        weight : String or None
+            key for edge weight.
+        """
+        s = sum(d for v, d in self.degree(weight=weight))
+        return s // 2 if weight is None else s / 2
 
     def neighbors(self, node):
         try:
@@ -244,13 +251,7 @@ class Graph(object):
 
 if __name__ == "__main__":
     A = Graph()
-    A.add_node(node_for_adding = 1, k=2, c=3)
-    A.add_edge("b",3,w=1)
-    B = A.nodes_subgraph(from_nodes=[2,3])
-    tt = A.nodes.items()
-    print(A.nodes)
-    print(tt[1])
-    # print(B.edges)
-
-    B = A.to_index_node_graph()
-    print(B.nodes)
+    A.add_edge(1,2, weight=1)
+    A.add_edge(2,3, weight=2)
+    b = A.degree(weight='weight')
+    print(b)
