@@ -5,15 +5,17 @@ __all__ = [
 
 def get_community_kernel(G, C: [frozenset], weight='weight'):
     '''
-
+    To get community kernels with most degrees.
     Parameters
     ----------
-    G
-    C
+    G : graph
+        An undirected graph.
+    C : int
+        #communities
 
     Returns
     -------
-
+    kernels
     '''
     area = []
     for i in range(len(G)):
@@ -46,17 +48,37 @@ def get_community_kernel(G, C: [frozenset], weight='weight'):
     # print(kernels)
     return kernels
 
-def get_structural_holes_MaxD (G, k_size, C: [frozenset], weight='weight'):
-    """
-    Returns result of method MaxD in paper https://www.aminer.cn/structural-hole
+
+def get_structural_holes_MaxD (G, k_size, C: [frozenset]):
+    '''
+    To calc the strucutral hole spanners using MaxD.
+
 
     Parameters
     ----------
     G : graph
 
+
     C : [frozenset]
         communities
     """
+
+        An undirected graph.
+    k_size : int
+        top-k SHS
+    C : int
+        #communities
+
+    Returns
+    -------
+    A list of top-k spanners.
+    '''
+    # for i, cc in enumerate(C):
+    #     for aq in cc:
+    #         print(i, ":", aq)
+    #     print()
+    # print(len(C))
+
 
     kernels = get_community_kernel(G, C)
     c = len(kernels)
@@ -103,6 +125,19 @@ def get_structural_holes_MaxD (G, k_size, C: [frozenset], weight='weight'):
     return ans_list
 
 def pick_candidates(n, candidates, kernels, save):
+    '''
+    detect candidates.
+    Parameters
+    ----------
+    n : #nodes
+    candidates : A list of candidates.
+    kernels : A list of kernels
+    save : A bool list of visited candidates for max_flow.
+
+    Returns
+    -------
+    A tuple of min_cut, best_candidate of this round.
+    '''
     for i in range(len(candidates)):
         save[candidates[i]] = False
     old_flow = max_flow(n, kernels, save)
@@ -145,6 +180,13 @@ prev_flow = []
 oo = 1000000000
 
 def dinic_bfs():
+    '''
+    using BFS to find augmenting path.
+
+    Returns
+    -------
+    A bool, whether found a augmenting path or not.
+    '''
     global dist, dest, src, node
     dist.clear()
     for i in range(node):
@@ -165,6 +207,17 @@ def dinic_bfs():
     return dist[dest] >= 0
 
 def dinic_dfs(x, exp):
+    '''
+    using DFS to calc the augmenting path and refresh network.
+    Parameters
+    ----------
+    x : current node.
+    exp : current flow.
+
+    Returns
+    -------
+    current flow.
+    '''
     if x == dest:
         return exp
     res = 0
@@ -186,6 +239,13 @@ def dinic_dfs(x, exp):
     return res
 
 def dinic_flow():
+    '''
+    Dinic algorithm to calc max_flow.
+
+    Returns
+    -------
+    max_flow.
+    '''
     result = 0
     global work
     while dinic_bfs():
@@ -196,6 +256,19 @@ def dinic_flow():
     return result
 
 def max_flow(n,kernels, save, prev_flow = None):
+    '''
+    Calculate max_flow.
+    Parameters
+    ----------
+    n : #nodes
+    kernels : A list of kernels.
+    save : A bool list of visited nodes.
+    prev_flow : A list of previous flows.
+
+    Returns
+    -------
+    max_flow
+    '''
     global dsave, node
     dsave.clear()
     for i in range(node):
@@ -217,6 +290,18 @@ def max_flow(n,kernels, save, prev_flow = None):
     return ret
 
 def init_MaxD(_node, _src, _dest):
+    '''
+    Initialize a network.
+    Parameters
+    ----------
+    _node : #nodes
+    _src : the source node
+    _dest : the destiny node
+
+    Returns
+    -------
+    void
+    '''
     global node, src, dest
     node = _node
     src = _src
@@ -235,6 +320,19 @@ def init_MaxD(_node, _src, _dest):
     return
 
 def addedge(u, v, c1, c2):
+    '''
+    Add an edge(u,v) with capacity c1 and inverse capacity c2.
+    Parameters
+    ----------
+    u : node u
+    v : node v
+    c1 : capacity c1
+    c2 : capacity c2
+
+    Returns
+    -------
+    void
+    '''
     # print(u, v)
     global nedge
     global point, capa, flow, nex, head
@@ -254,6 +352,19 @@ def addedge(u, v, c1, c2):
     return
 
 def build_network(kernels, c, G):
+    '''
+    build a network.
+    Parameters
+    ----------
+    kernels : A list of kernels.
+    c : #communities.
+    G : graph
+        An undirected graph.
+
+    Returns
+    -------
+    void
+    '''
     n = len(G)
     init_MaxD(n*(c-1)+2, n*(c-1), n*(c-1)+1)
 
