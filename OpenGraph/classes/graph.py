@@ -139,6 +139,35 @@ class Graph(object):
                 self._add_one_edge(edge[0], edge[1], attr)
             except Exception as err:
                 print(err)
+    
+    def add_edges_from_file(self, file, weighted=False):
+        """
+        Added edges from file, for example, txt files.
+        Each line is in form like:
+        a b 23.0
+        which denotes an edge (a, b) with weight 23.0.
+
+        Parameters
+        ----------
+        weighted : boolean
+            if true, add an weighted edge
+        """
+        with open(file, 'r') as fp:
+            edges = fp.readlines()
+        if weighted:
+            for edge in edges:
+                edge = edge.split()
+                try:
+                    self.add_edge(edge[0], edge[1])
+                except:
+                    pass
+        else:
+            for edge in edges:
+                edge = edge.split()
+                try:
+                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
+                except:
+                    pass
 
     def _add_one_edge(self, u_of_edge, v_of_edge, edge_attr: dict = {}):
         u, v = u_of_edge, v_of_edge
