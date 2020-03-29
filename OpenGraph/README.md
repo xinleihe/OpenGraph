@@ -73,6 +73,21 @@ Undirected graph class
             ])
   ```
 
++ **add_edges_from_file**
+
+  ```python
+  '''
+  Added edges from file, for example, txt files.
+  Each line is in form like:
+  a b 23.0
+  which denotes an edge (a, b) with weight 23.0.
+  '''
+  G.add_edges_from_file(file = "./youtube-links.txt",
+                       weighted = True)
+  ```
+
+  
+
 + **remove_node**
 
   ```python
