@@ -18,13 +18,13 @@ Undirected graph class
 
   returns all the edges ( list(tuple) )
 
-- {property} **degree**
+- **degree**
 
-  returns degree of each node ( dict )
+  returns degree(weighted or not) of each node ( dict )
 
-- {property} **size**
+- **size**
 
-  returns number of edges
+  returns sum of weight in graph, or the number of edges 
 
 - **neighbors**
 
@@ -164,6 +164,14 @@ Many properties and functions are same as Class Graph, except:
 + **neighbors**
 
   returns the **successors** of node x
+  
++ **out_degree**
+
+  returns out degree(weighted or not) of each node ( dict )
+
++ **in_degree**
+
+  returns out degree(weighted or not) of each node ( dict )
 
 ## Functions
 
@@ -306,8 +314,7 @@ Many properties and functions are same as Class Graph, except:
   
   # Get structural holes via HIS method
   S, I, H = get_structural_holes_HIS(G = g, C = cmnts, epsilon=0.01)
-```
-  
+  ```
 
 `./functions/structural_holes/MaxD.py`
 
