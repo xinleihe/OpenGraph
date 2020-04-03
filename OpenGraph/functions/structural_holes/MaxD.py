@@ -57,27 +57,18 @@ def get_structural_holes_MaxD (G, k_size, C: [frozenset]):
     Parameters
     ----------
     G : graph
+        An undirected graph.
 
+    k_size : int
+        top-k SHS
 
     C : [frozenset]
         communities
-    """
-
-        An undirected graph.
-    k_size : int
-        top-k SHS
-    C : int
-        #communities
-
+        
     Returns
     -------
     A list of top-k spanners.
     '''
-    # for i, cc in enumerate(C):
-    #     for aq in cc:
-    #         print(i, ":", aq)
-    #     print()
-    # print(len(C))
 
 
     kernels = get_community_kernel(G, C)
