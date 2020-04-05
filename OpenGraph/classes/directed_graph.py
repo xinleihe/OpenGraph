@@ -88,7 +88,7 @@ class DiGraph(object):
         weight : String or None
             key for edge weight.
         """
-        s = sum(d for v, d in self.out_degree(weight=weight))
+        s = sum(d for v, d in self.out_degree(weight=weight).items())
         return int(s) if weight is None else s
 
     def neighbors(self):
@@ -239,7 +239,7 @@ class DiGraph(object):
         return len(self._node)
 
     def number_of_edges(self):
-        return int(self.size)
+        return int(self.size())
 
     def is_directed(self):
         return True

@@ -82,7 +82,7 @@ class Graph(object):
         weight : String or None
             key for edge weight.
         """
-        s = sum(d for v, d in self.degree(weight=weight))
+        s = sum(d for v, d in self.degree(weight=weight).items())
         return s // 2 if weight is None else s / 2
 
     def neighbors(self, node):
@@ -225,7 +225,7 @@ class Graph(object):
         return len(self._node)
 
     def number_of_edges(self):
-        return int(self.size)
+        return int(self.size())
 
     def is_directed(self):
         return False
