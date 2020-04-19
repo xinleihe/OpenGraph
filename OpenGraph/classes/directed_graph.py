@@ -167,14 +167,14 @@ class DiGraph(object):
             for edge in edges:
                 edge = edge.split()
                 try:
-                    self.add_edge(edge[0], edge[1])
+                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
                 except:
                     pass
         else:
             for edge in edges:
                 edge = edge.split()
                 try:
-                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
+                    self.add_edge(edge[0], edge[1])
                 except:
                     pass
 
