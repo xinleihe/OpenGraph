@@ -79,6 +79,14 @@ class DiGraph(object):
 
         return degree
 
+    def degree(self, weight='weight'):
+        degree = dict()
+        outdegree = self.out_degree(weight=weight)
+        indegree = self.in_degree(weight=weight)
+        for u in outdegree:
+            degree[u] = outdegree[u] + indegree[u]
+        return degree
+
     def size(self, weight=None):
         """
         Returns the number of edges or total of all edge weights.
@@ -91,10 +99,28 @@ class DiGraph(object):
         s = sum(d for v, d in self.out_degree(weight=weight).items())
         return int(s) if weight is None else s
 
-    def neighbors(self):
+    def neighbors(self, node):
         # successors
         try:
             return iter(self._adj[node])
+        except KeyError:
+            print("No node {}".format(node))
+
+    successors = neighbors
+    
+    def predecessors(self, node):
+        # predecessors
+        try:
+            return iter(self._pred[node])
+        except KeyError:
+            print("No node {}".format(node))
+
+    def all_neighbors(self, node):
+        # union of successors and predecessors
+        try:
+            neighbors = self._adj[node]
+            neighbors.extend(self.pred[node])
+            return iter(neighbors)
         except KeyError:
             print("No node {}".format(node))
 
@@ -268,6 +294,11 @@ class DiGraph(object):
                         G.add_edge(u, v, **edge_data.copy())
         
         return G
+
+    def ego_subgraph(self, center):
+        neighbors_of_center = list(self.all_neighbors(center))
+        neighbors_of_center.append(center)
+        return self.nodes_subgraph(from_nodes=neighbors_of_center)
 
     def to_index_node_graph(self):
         """
