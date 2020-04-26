@@ -2,7 +2,7 @@ import sys
 sys.path.append('../../../')
 import OpenGraph as og
 
-from node2vec_multi_thread import Node2Vec
+from .node2vec_multi_thread import Node2Vec
 import random
 import numpy as np
 from tqdm import tqdm
