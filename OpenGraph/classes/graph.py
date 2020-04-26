@@ -82,7 +82,7 @@ class Graph(object):
         weight : String or None
             key for edge weight.
         """
-        s = sum(d for v, d in self.degree(weight=weight))
+        s = sum(d for v, d in self.degree(weight=weight).items())
         return s // 2 if weight is None else s / 2
 
     def neighbors(self, node):
@@ -90,6 +90,8 @@ class Graph(object):
             return iter(self._adj[node])
         except KeyError:
             print("No node {}".format(node))
+
+    all_neighbors = neighbors
 
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
@@ -158,14 +160,14 @@ class Graph(object):
             for edge in edges:
                 edge = edge.split()
                 try:
-                    self.add_edge(edge[0], edge[1])
+                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
                 except:
                     pass
         else:
             for edge in edges:
                 edge = edge.split()
                 try:
-                    self.add_edge(edge[0], edge[1], weight=float(edge[2]))
+                    self.add_edge(edge[0], edge[1])
                 except:
                     pass
 
@@ -225,7 +227,7 @@ class Graph(object):
         return len(self._node)
 
     def number_of_edges(self):
-        return int(self.size)
+        return int(self.size())
 
     def is_directed(self):
         return False
@@ -255,6 +257,11 @@ class Graph(object):
         
         return G
 
+    def ego_subgraph(self, center):
+        neighbors_of_center = list(self.all_neighbors(center))
+        neighbors_of_center.append(center)
+        return self.nodes_subgraph(from_nodes=neighbors_of_center)
+
     def to_index_node_graph(self):
         """
         Returns
@@ -283,4 +290,4 @@ if __name__ == "__main__":
     A.add_edge(1,2, weight=1)
     A.add_edge(2,3, weight=2)
     b = A.degree(weight='weight')
-    print(b)
+    B = A.ego_subgraph(1)

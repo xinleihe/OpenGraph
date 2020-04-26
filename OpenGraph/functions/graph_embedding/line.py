@@ -15,7 +15,9 @@ from tensorflow.python.keras.models import Model
 
 
 def line_loss(y_true, y_pred):
-    return -K.mean(K.log(K.sigmoid(y_true*y_pred)))
+    y = K.sigmoid(y_true*y_pred)
+    # Avoid Nan in the result of 'K.log'
+    return -K.mean(K.log(tf.clip_by_value(y,1e-8,tf.reduce_max(y))))
 
 
 def create_model(numNodes, embedding_size, order='second'):
@@ -203,29 +205,60 @@ class LINE:
 
 if __name__ == "__main__":
 
-    with open('./release-youtube-links.txt', 'r') as fp:
-        data = fp.readlines()
-    G = og.Graph()
-    edges = []
-    for edge in data:
-        edge = edge.split()
-        edges.append(edge)
+    # with open('./test_line/blog.txt', 'r') as fp:
+    #     data = fp.readlines()
+    # G = og.Graph()
+    # edges = []
+    # for edge in data:
+    #     edge = edge.split()
+    #     edges.append(edge)
     
-    print(len(edges))
-    import random
-    random.shuffle(edges)
-    for edge in edges[:1000]:
-        try:
-            G.add_edge(int(edge[0]), int(edge[1]))
-        except:
-            pass
+    # print(len(edges))
+    # import random
+    # random.shuffle(edges)
+    # for edge in edges[:1000]:
+    #     try:
+    #         G.add_edge(int(edge[0]), int(edge[1]))
+    #     except:
+    #         pass
 
-    model = LINE(G, embedding_size=128, order='second')
-    model.train(batch_size=1024, epochs=50, verbose=2)
+
+    # 04/19
+    from scipy.io import loadmat
+    def sparse2graph(x):
+        from collections import defaultdict
+        from six import iteritems
+
+        G = defaultdict(lambda: set())
+        cx = x.tocoo()
+        for i, j, v in zip(cx.row, cx.col, cx.data):
+            G[i].add(j)
+        return {str(k): [str(x) for x in v] for k, v in iteritems(G)}
+
+    # mat = loadmat('./test_line/blogcatalog.mat')
+    # A = mat['network']
+    # gg = sparse2graph(A)
+
+    # G = og.Graph()
+    # for u in gg:
+    #     for v in gg[u]:
+    #         G.add_edge(u, v)
+
+    G = og.Graph()
+    G.add_edges_from_file(file='./test_line/release-youtube-links.txt')
+
+
+    print('yes')
+    model = LINE(G, embedding_size=16, order='all')
+    model.train(batch_size=1024, epochs=1, verbose=2)
     embeddings = model.get_embeddings()
 
-    for node in embeddings:
-        # print("{}: {}".format(node, embeddings[node]))
-        pass
+    with open('./test_line/youtube_line.embeddings', 'w') as fp:
+        for node in embeddings:
+            # print("{}: {}".format(node, embeddings[node]))
+            fp.write(str(node) +' ')
+            for pos_value in embeddings[node]:
+                fp.write(str(pos_value) + ' ')
+            fp.write('\n')
 
     
