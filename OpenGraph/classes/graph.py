@@ -91,6 +91,8 @@ class Graph(object):
         except KeyError:
             print("No node {}".format(node))
 
+    all_neighbors = neighbors
+
     def add_node(self, node_for_adding, **node_attr):
         self._add_one_node(node_for_adding, node_attr)
 
@@ -255,6 +257,11 @@ class Graph(object):
         
         return G
 
+    def ego_subgraph(self, center):
+        neighbors_of_center = list(self.all_neighbors(center))
+        neighbors_of_center.append(center)
+        return self.nodes_subgraph(from_nodes=neighbors_of_center)
+
     def to_index_node_graph(self):
         """
         Returns
@@ -283,4 +290,4 @@ if __name__ == "__main__":
     A.add_edge(1,2, weight=1)
     A.add_edge(2,3, weight=2)
     b = A.degree(weight='weight')
-    print(b)
+    B = A.ego_subgraph(1)
